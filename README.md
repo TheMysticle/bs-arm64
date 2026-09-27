@@ -5,12 +5,44 @@
 > installs it with one click.
 > **[How to install on the Steam Frame](https://github.com/TheMysticle/bs-manager-steam-frame/blob/arm64-integration/docs/steam-frame.md)**
 
-Run Beat Saber 1.44.1 as a **native Windows ARM64** program on ARM64 Linux under Proton, tested on the
+> [!NOTE]
+> **This is a fork of [DaVarga/bs-arm64](https://github.com/DaVarga/bs-arm64).** All of the actual
+> engineering below — reverse-engineering what it takes to run Beat Saber as native ARM64 Windows
+> code under Proton, and building every native replacement component that requires (Steamworks,
+> lsteamclient, wineopenxr, DXVK, the BSIPA Doorstop, all rebuilt for ARM64) — is
+> [Daniel Varga (DaVarga)](https://github.com/DaVarga)'s original work, targeting Beat Saber 1.44.1
+> (Unity 6000.0.40f1). This fork's only change is **porting that same pipeline to Beat Saber 1.45.1**
+> (Unity 6000.3.19f1):
+>
+> - Retargeted `versions.env`'s `GAME_VERSION`, `UNITY_VERSION` and `UNITY_CHANGESET` to 1.45.1.
+> - Worked around Unity dropping the native ARM64 (UWP) build of its OpenXR plugin after 1.16.1: the
+>   game's own `com.unity.xr.openxr` is 1.17.1, but no version since 1.16.1 ships that build (checked
+>   through the latest published, 1.19.0-pre.1). The patch step pairs the last 1.16.1 ARM64 binary
+>   with the game's actual 1.17.1 managed wrapper, relying on Unity's native plugin ABI
+>   (`IUnityInterfaces`) being stable across that gap — see the comment in `versions.env` for the full
+>   reasoning.
+> - Fixed repo references (in `build.sh`'s BSManager install template, `docs/INSTALL.md`, and this
+>   README) that pointed at DaVarga's own `bs-manager` fork and this repo's old releases instead of
+>   this project's actual downstream ([TheMysticle/bs-manager-steam-frame](https://github.com/TheMysticle/bs-manager-steam-frame))
+>   and its own releases page.
+> - Cut the first 1.45.1 release (`v1.45.1`, for `proton-11.0-2c`).
+>
+> **Verified working end to end on a Steam Frame:** native launch confirmed via the running
+> process (genuine `bin-arm64/wineserver`, not FEX), the game's own log reporting
+> `Running on Unity 6000.3.19f1` / `Game version 1.45.1`, mods loading correctly (SiraUtil, BSML,
+> SongCore, BS Utils, CustomSabersLite, HitScoreVisualizer), and a full song played start to finish
+> with no errors. The performance numbers and some of the tips below are carried over from the
+> original 1.44.1 testing and haven't been re-measured on 1.45.1 yet.
+
+Run Beat Saber 1.45.1 as a **native Windows ARM64** program on ARM64 Linux under Proton, tested on the
 **Steam Frame**, instead of emulating the x64 build with FEX.
 
 The game's engine and C# code both run natively. Only Proton's small `steam.exe` launcher stays x64.
 
 ## Results on the Steam Frame
+
+> Measured on 1.44.1 by the original project, before this fork's 1.45.1 port; not yet re-measured.
+> Included as a representative, not a guarantee for 1.45.1.
 
 Numbers come from SteamVR's per-session compositor stats, at a 120 Hz target:
 
@@ -39,7 +71,8 @@ to the song's loudness. See [docs/FINDINGS.md](docs/FINDINGS.md#frame-pacing).
 
 In the game's graphics settings, turn off **Screen Distortion**. For the effect, the game copies the
 whole scene in the middle of every frame and keeps drawing on it, which costs a lot of GPU time on the
-Frame's tiled GPU. In v0.1.6 it also caused frozen ghost images of the menu and sabers.
+Frame's tiled GPU. An older 1.44.1 release also showed frozen ghost images of the menu and sabers with
+it on; not yet re-checked on the 1.45.1 port.
 
 ## Foveated rendering (optional)
 
@@ -67,12 +100,12 @@ Radius, densities and the gaze correction are set with `BS_ARM64_FDM_*` variable
 | OpenXR on SteamVR, controllers, recenter | ✅ |
 | Burst-compiled code | ⚠️ x64 `lib_burst_generated.dll` can't load; Unity falls back to managed code |
 | LIV mixed-reality capture | ❌ not available (a stub `LIV_Bridge.dll` reports "no capture") |
-| Mods: BSIPA 4.3.7 + Harmony (tested: SiraUtil, BSML, SongCore, BS Utils) | ✅ with the ARM64 Doorstop + patched MonoMod.Core |
-| Other game versions | ❌ only 1.44.1 (Unity 6000.0.40f1) |
+| Mods: BSIPA 4.3.7 + Harmony (tested: SiraUtil, BSML, SongCore, BS Utils, CustomSabersLite, HitScoreVisualizer) | ✅ with the ARM64 Doorstop + patched MonoMod.Core |
+| Other game versions | ❌ only 1.45.1 (Unity 6000.3.19f1) |
 
 ## How it works
 
-The ARM64 player comes from the same Unity version the game was built with (6000.0.40f1). Every native
+The ARM64 player comes from the same Unity version the game was built with (6000.3.19f1). Every native
 piece around it that only existed as x64 or ARM64EC has an ARM64 replacement. Details are in
 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
@@ -96,21 +129,21 @@ piece around it that only existed as x64 or ARM64EC has an ARM64 replacement. De
 
 The Steam Frame fork of BSManager, [TheMysticle/bs-manager-steam-frame](https://github.com/TheMysticle/bs-manager-steam-frame)
 (ARM64 AppImage on its releases page), fixes BSManager for ARM64 Proton and adds an **ARM64 tab**
-next to Mods for 1.44.1 instances. That tab downloads the release matching your Proton build and
+next to Mods for 1.45.1 instances. That tab downloads the release matching your Proton build and
 installs, reinstalls or removes it, with or without mod support. It also re-applies the ARM64 mod
 loader fixes after BSIPA is installed, and sets up the launch environment.
 
 ### By hand
 
-On the Steam Frame, with BSManager, a 1.44.1 instance, and "Proton 11.0 (ARM64)":
+On the Steam Frame, with BSManager, a 1.45.1 instance, and "Proton 11.0 (ARM64)":
 
 Download the release tarball that matches your Proton version (`<Proton dir>/version`) from the
-[releases page](https://github.com/DaVarga/bs-arm64/releases), then on the Frame:
+[releases page](https://github.com/TheMysticle/bs-arm64/releases), then on the Frame:
 
 ```sh
 tar xf bs-arm64-*.tar.gz && cd bs-arm64-*/
-./bs-arm64.sh install ~/.local/share/BSManager/BSInstances/1.44.1   # downloads the Unity player etc.
-./bs-arm64.sh launch  ~/.local/share/BSManager/BSInstances/1.44.1
+./bs-arm64.sh install ~/.local/share/BSManager/BSInstances/1.45.1   # downloads the Unity player etc.
+./bs-arm64.sh launch  ~/.local/share/BSManager/BSInstances/1.45.1
 ```
 
 Or build it yourself:
@@ -119,16 +152,17 @@ Or build it yourself:
 # 1. build the open-source parts (any Linux host, x86_64 or aarch64); see docs/BUILD.md
 ./build.sh
 # 2. copy the repo (with out/) to the Frame, then there:
-install/bs-arm64.sh install ~/.local/share/BSManager/BSInstances/1.44.1
-install/bs-arm64.sh launch  ~/.local/share/BSManager/BSInstances/1.44.1
+install/bs-arm64.sh install ~/.local/share/BSManager/BSInstances/1.45.1
+install/bs-arm64.sh launch  ~/.local/share/BSManager/BSInstances/1.45.1
 # undo:
-install/bs-arm64.sh uninstall ~/.local/share/BSManager/BSInstances/1.44.1
+install/bs-arm64.sh uninstall ~/.local/share/BSManager/BSInstances/1.45.1
 ```
 
 See [docs/INSTALL.md](docs/INSTALL.md) for every file that gets touched.
 
-> **Status:** verified end to end on the Frame. A clean `build.sh` output was installed with
-> `install/bs-arm64.sh` into a fresh copy of a BSManager 1.44.1 instance: Steam, VR and maps all work.
+> **Status:** verified end to end on a Steam Frame. A clean `build.sh` output was installed with
+> `install/bs-arm64.sh` into a fresh copy of a BSManager 1.45.1 instance: Steam, VR, maps and mods all
+> work, confirmed by playing a full song through the native build (see the fork note at the top).
 
 ## Docs
 
