@@ -3,7 +3,7 @@
 > [!NOTE]
 > The easiest way to get this running on your Frame is the Frame-compatible BSManager fork, which
 > installs it with one click.
-> **[How to install on the Steam Frame](https://github.com/DaVarga/bs-manager/blob/bs-arm64/docs/steam-frame.md)**
+> **[How to install on the Steam Frame](https://github.com/TheMysticle/bs-manager-steam-frame/blob/arm64-integration/docs/steam-frame.md)**
 
 Run Beat Saber 1.44.1 as a **native Windows ARM64** program on ARM64 Linux under Proton, tested on the
 **Steam Frame**, instead of emulating the x64 build with FEX.
@@ -94,7 +94,7 @@ piece around it that only existed as x64 or ARM64EC has an ARM64 replacement. De
 
 ### With BSManager (easiest)
 
-The Steam Frame fork of BSManager, [DaVarga/bs-manager](https://github.com/DaVarga/bs-manager)
+The Steam Frame fork of BSManager, [TheMysticle/bs-manager-steam-frame](https://github.com/TheMysticle/bs-manager-steam-frame)
 (ARM64 AppImage on its releases page), fixes BSManager for ARM64 Proton and adds an **ARM64 tab**
 next to Mods for 1.44.1 instances. That tab downloads the release matching your Proton build and
 installs, reinstalls or removes it, with or without mod support. It also re-applies the ARM64 mod

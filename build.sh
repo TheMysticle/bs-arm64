@@ -405,7 +405,7 @@ that Proton's own libraries. When Steam updates Proton, wait for a matching rele
 ## Install
 
 Easiest: the **ARM64 tab** of the Steam Frame BSManager fork
-(https://github.com/DaVarga/bs-manager) installs this release for you. By hand:
+(https://github.com/TheMysticle/bs-manager-steam-frame) installs this release for you. By hand:
 
 Work on a **copy** of your $GAME_VERSION instance (BSManager can duplicate instances). The Wine prefix
 must exist: launch any game with it once.

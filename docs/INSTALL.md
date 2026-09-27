@@ -1,7 +1,7 @@
 # Installing and running
 
 The easiest way is the ARM64 tab of the Steam Frame fork of BSManager
-([DaVarga/bs-manager](https://github.com/DaVarga/bs-manager)), which runs this installer for you.
+([TheMysticle/bs-manager-steam-frame](https://github.com/TheMysticle/bs-manager-steam-frame)), which runs this installer for you.
 The rest of this page describes the installer itself.
 
 The installer is `install/bs-arm64.sh`. It runs on the device (Steam Frame, SteamOS) and needs only
