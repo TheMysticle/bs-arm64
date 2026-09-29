@@ -1,6 +1,14 @@
 # bs-arm64: native ARM64 Beat Saber on Proton
 
 > [!NOTE]
+> **Also works on Beat Saber 1.45.2** (shipped 2026-09-29). That update is content-only for
+> anything this project touches: every `Beat Saber_Data/Managed/*.dll`, `Beat Saber.exe`, and
+> `UnityPlayer.dll` are byte-identical to 1.45.1, and the Unity version (6000.3.19f1) didn't
+> change — only `globalgamemanagers` did (it embeds the version string plus the new song/beatmap
+> data), which is why the version number moved at all. `install/bs-arm64.sh` now accepts either
+> version.
+
+> [!NOTE]
 > The easiest way to get this running on your Frame is the Frame-compatible BSManager fork, which
 > installs it with one click.
 > **[How to install on the Steam Frame](https://github.com/TheMysticle/bs-manager-steam-frame/blob/arm64-integration/docs/steam-frame.md)**
@@ -101,7 +109,7 @@ Radius, densities and the gaze correction are set with `BS_ARM64_FDM_*` variable
 | Burst-compiled code | ⚠️ x64 `lib_burst_generated.dll` can't load; Unity falls back to managed code |
 | LIV mixed-reality capture | ❌ not available (a stub `LIV_Bridge.dll` reports "no capture") |
 | Mods: BSIPA 4.3.7 + Harmony (tested: SiraUtil, BSML, SongCore, BS Utils, CustomSabersLite, HitScoreVisualizer) | ✅ with the ARM64 Doorstop + patched MonoMod.Core |
-| Other game versions | ❌ only 1.45.1 (Unity 6000.3.19f1) |
+| Other game versions | ❌ only 1.45.1 / 1.45.2 (Unity 6000.3.19f1) |
 
 ## How it works
 

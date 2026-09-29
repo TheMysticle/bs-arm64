@@ -380,16 +380,17 @@ EOF
     tar -C "$dist" --owner=0 --group=0 --numeric-owner --sort=name -czf "$dist/$name.tar.gz" "$name"
     (cd "$dist" && sha256sum "$name.tar.gz" > "$name.tar.gz.sha256")
 
+    local game_versions_display=${GAME_VERSION_COMPAT// /, }
     cat > "$dist/RELEASE_NOTES.md" <<EOF
-Runs Beat Saber **$GAME_VERSION** as a native Windows ARM64 program under ARM64 Proton (tested on the
-Steam Frame) instead of emulating the x64 build with FEX.
+Runs Beat Saber **$game_versions_display** as a native Windows ARM64 program under ARM64 Proton (tested on
+the Steam Frame) instead of emulating the x64 build with FEX.
 
 ## Works with
 
 | | |
 |---|---|
 | Proton | **$PROTON_TAG** only: Steam's "Proton 11.0 (ARM64)" at that build |
-| Beat Saber | **$GAME_VERSION** only (Unity $UNITY_VERSION), e.g. a BSManager instance |
+| Beat Saber | **$game_versions_display** (Unity $UNITY_VERSION), e.g. a BSManager instance |
 | VR | SteamVR (OpenXR) |
 | Mods | BSIPA 4.3.7 with Harmony mods (tested: SiraUtil, BSML, SongCore, BS Utils, CustomSabersLite, HitScoreVisualizer) |
 

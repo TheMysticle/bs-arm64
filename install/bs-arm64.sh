@@ -38,8 +38,15 @@ DEBUG=0
 MODS=1
 
 BS_APP_ID=620980
-SUPPORTED_GAME_VERSION=$GAME_VERSION
 STATE_DIR=.bs-arm64             # inside the instance: backup + install record
+
+is_supported_version() {
+    local v=$1 sv
+    for sv in $GAME_VERSION_COMPAT; do
+        [ "$v" = "$sv" ] && return 0
+    done
+    return 1
+}
 RUNTIME_DIR=drive_c/bs-arm64    # inside the prefix: WINEDLLPATH for the Wine builtins
 PLAYER_VARIATION=Variations/win_arm64_player_nondevelopment_mono
 
@@ -263,7 +270,7 @@ cmd_install() {
     INSTANCE=$(cd "$INSTANCE" && pwd)
     local version
     version=$(game_version "$INSTANCE")
-    [ "$version" = "$SUPPORTED_GAME_VERSION" ] || die "instance is Beat Saber $version; only $SUPPORTED_GAME_VERSION (Unity $UNITY_VERSION) is supported"
+    is_supported_version "$version" || die "instance is Beat Saber $version; only $GAME_VERSION_COMPAT (Unity $UNITY_VERSION) is supported"
     # lsteamclient_a64/wineopenxr_a64 talk to this Proton's unix libraries: the build must match.
     case $(proton_version) in
         "$PROTON_TAG" | "$PROTON_TAG"-*) ;;
@@ -318,7 +325,7 @@ cmd_install() {
     echo "$MODS" > "$INSTANCE/$STATE_DIR/mods"
     setup_prefix
     proton_version > "$INSTANCE/$STATE_DIR/proton-version"
-    echo "$SUPPORTED_GAME_VERSION" > "$INSTANCE/$STATE_DIR/installed"
+    echo "$version" > "$INSTANCE/$STATE_DIR/installed"
     log "done"
     # Run by hand (not from a launcher such as BSManager): show how to start it
     [ -t 1 ] && log "start with: $0 launch '$INSTANCE'"
