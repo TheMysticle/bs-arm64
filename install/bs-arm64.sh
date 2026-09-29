@@ -323,6 +323,10 @@ cmd_install() {
         restore_bsipa_files
     fi
     echo "$MODS" > "$INSTANCE/$STATE_DIR/mods"
+    # Record which release this is, so BSManager's ARM64 tab can show it even when this
+    # script was run directly instead of through BSManager's own installer (which otherwise
+    # tracks it in its own bookkeeping file next to this one).
+    [ -f "$HERE/RELEASE_VERSION" ] && cp "$HERE/RELEASE_VERSION" "$INSTANCE/$STATE_DIR/release"
     setup_prefix
     proton_version > "$INSTANCE/$STATE_DIR/proton-version"
     echo "$version" > "$INSTANCE/$STATE_DIR/installed"

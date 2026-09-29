@@ -333,6 +333,10 @@ PY
     cp "$ROOT/install/bs-arm64.sh" "$ROOT/versions.env" "$ROOT/src/unityopenxr/patch_unityopenxr.py" \
        "$ROOT/tools/unity_pkg_extract.py" "$ROOT/tools/vcredist_extract.py" "$ROOT/LICENSE" "$ROOT/README.md" "$stage/"
     cp -r "$ROOT/docs" "$stage/"
+    # So bs-arm64.sh can record which release tag it installed even when run directly
+    # (not through BSManager, which otherwise tracks this itself) -- BSManager's ARM64 tab
+    # falls back to this when its own bookkeeping is missing, instead of showing "?".
+    printf '%s' "$version" > "$stage/RELEASE_VERSION"
 
     local l=$stage/licenses
     cp "$PROTON/LICENSE" "$l/Proton-LICENSE"
