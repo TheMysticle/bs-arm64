@@ -8,8 +8,8 @@ The installer is `install/bs-arm64.sh`, a small wrapper around the Python packag
 SteamOS) and needs only `python3`, which ships with SteamOS. It also needs:
 
 - an **instance**: the folder of a Beat Saber install, the one that contains `Beat Saber.exe` and
-  `Beat Saber_Data/`, e.g. `~/.local/share/BSManager/BSInstances/1.44.1`. The commands below take it
-  as `<instance>`. It must be a game version on **Unity 6000.0.40f1** (1.40.9 through 1.44.1);
+  `Beat Saber_Data/`, e.g. `~/.local/share/BSManager/BSInstances/1.45.1`. The commands below take it
+  as `<instance>`. It must be a game version on **Unity 6000.3.19f1** (1.45.1 or 1.45.2);
   `install` reads the engine from `Beat Saber_Data/globalgamemanagers` and refuses other engines
   before changing anything.
 - **Proton 11.0 (ARM64)**, the exact version the DLLs were built for
@@ -48,25 +48,26 @@ If Unity's download URL does not work on your connection, pass `--unity-src PATH
 `fetch` or `install` to read a local package or stream a custom HTTP(S) URL:
 
 ```sh
-install/bs-arm64.sh fetch --unity-src ~/Downloads/UnitySetup-Windows-Mono-Support-for-Editor-6000.0.40f1.pkg
-install/bs-arm64.sh fetch --unity-src 'https://example.com/UnitySetup-Windows-Mono-Support-for-Editor-6000.0.40f1.pkg'
+install/bs-arm64.sh fetch --unity-src ~/Downloads/UnitySetup-Windows-Mono-Support-for-Editor-6000.3.19f1.pkg
+install/bs-arm64.sh fetch --unity-src 'https://example.com/UnitySetup-Windows-Mono-Support-for-Editor-6000.3.19f1.pkg'
 install/bs-arm64.sh install <instance> --unity-src /path/to/unity.pkg
 ```
 
-Use the **Windows Mono support package for Unity 6000.0.40f1**, matching `UNITY_VERSION` in
+Use the **Windows Mono support package for Unity 6000.3.19f1**, matching `UNITY_VERSION` in
 `versions.env`. Keep the `.pkg` packed; the installer extracts only the required ARM64 player files
 into the usual cache. Existing cached files are reused even when `--unity-src` is supplied.
 Use `--openxr-src PATH_OR_URL` to supply the separate Unity OpenXR `.tgz` package, matching
-`UNITY_OPENXR_VERSION` in `versions.env` (currently 1.14.3). The installer extracts and patches its
+`UNITY_OPENXR_VERSION` in `versions.env` (currently 1.16.1, the last one with a UWP ARM64 build; see
+`docs/ARCHITECTURE.md`). The installer extracts and patches its
 ARM64 DLL as usual. A custom URL also works, e.g.
-`--openxr-src https://example.com/com.unity.xr.openxr-1.14.3.tgz`. Each option defaults to Unity's download URL when omitted, and each package
+`--openxr-src https://example.com/com.unity.xr.openxr-1.16.1.tgz`. Each option defaults to Unity's download URL when omitted, and each package
 is fetched only if its extracted files are missing from the cache.
 
 With both packages supplied locally, `fetch` and `install` need no downloads:
 
 ```sh
-install/bs-arm64.sh fetch --unity-src /path/to/unity.pkg --openxr-src /path/to/com.unity.xr.openxr-1.14.3.tgz
-install/bs-arm64.sh install <instance> --unity-src /path/to/unity.pkg --openxr-src /path/to/com.unity.xr.openxr-1.14.3.tgz
+install/bs-arm64.sh fetch --unity-src /path/to/unity.pkg --openxr-src /path/to/com.unity.xr.openxr-1.16.1.tgz
+install/bs-arm64.sh install <instance> --unity-src /path/to/unity.pkg --openxr-src /path/to/com.unity.xr.openxr-1.16.1.tgz
 ```
 
 ## What `install` changes
@@ -156,7 +157,7 @@ SteamVR must be running, which it always is in the Frame's game mode. SteamVR re
 
 | Symptom | Cause |
 |---|---|
-| `instance is Unity 2022.3.33f1 (Beat Saber 1.40.8); this runtime is built for Unity 6000.0.40f1` | the game version runs on another Unity engine; it isn't supported |
+| `instance is Unity 6000.0.40f1 (Beat Saber 1.44.1); this runtime is built for Unity 6000.3.19f1` | the game version runs on another Unity engine; for 1.40.9–1.44.1 use [DaVarga/bs-arm64](https://github.com/DaVarga/bs-arm64)'s releases |
 | `[Steam] Not being able to initialize the platform` | `steam_api64.dll` not in `Plugins/ARM64`, or `WINEDLLPATH` missing; run `launch --debug` and look for `steam_api64(arm64)` lines |
 | `DllNotFoundException: UnityOpenXR` | `Plugins/ARM64/UnityOpenXR.dll` missing, or msvcp140/vcruntime140 missing |
 | `xrCreateInstance: XR_ERROR_RUNTIME_UNAVAILABLE` | registry value or JSON missing; `launch --debug` shows the loader's messages as `debugstr` lines |

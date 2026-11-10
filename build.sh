@@ -445,7 +445,7 @@ Steam Frame) instead of emulating the x64 build with FEX.
 | Proton | Steam's "Proton 11.0 (ARM64)", tested versions only: $proton_list |
 | Beat Saber | **$bs_range** (Unity $UNITY_VERSION), e.g. a BSManager instance; the installer refuses other Unity engines |
 | VR | SteamVR (OpenXR) |
-| Mods | 1.41.1 and later: BSIPA 4.3.7 with Harmony mods (tested: SiraUtil, BSML, SongCore, BS Utils, CustomSabersLite, HitScoreVisualizer). BeatMods has no mods for 1.40.9–1.40.13. |
+| Mods | BSIPA 4.3.7 with Harmony mods (tested: SiraUtil, BSML, SongCore, BS Utils, CustomSabersLite, HitScoreVisualizer) |
 
 Check your Proton version before installing; it must print one of these (with an \`-arm64\` suffix):
 

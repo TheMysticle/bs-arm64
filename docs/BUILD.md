@@ -81,8 +81,8 @@ and mod support only for those BSIPA versions:
     "proton-11.0-2c": {"artifact": "bs-arm64-v0.3.2-proton-11.0-2c.tar.gz"},
     "proton-11.0-2e": {"artifact": "bs-arm64-v0.3.2-proton-11.0-2c.tar.gz"}
   },
-  "unityVersions": ["6000.0.40f1"],
-  "bsVersions": ["1.40.9", "1.40.10", "…", "1.44.1"],
+  "unityVersions": ["6000.3.19f1"],
+  "bsVersions": ["1.45.1", "1.45.2"],
   "bsipaVersions": ["4.3.7"]
 }
 ```

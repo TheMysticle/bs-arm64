@@ -16,7 +16,7 @@ from .output import out
 from .report import doctor, status
 
 DESCRIPTION = """\
-Turn a Beat Saber install on Unity 6000.0.40f1 (1.40.9-1.44.1) into a native ARM64 build and run it
+Turn a Beat Saber install on Unity 6000.3.19f1 (1.45.1, 1.45.2) into a native ARM64 build and run it
 on ARM64 Proton (e.g. the Steam Frame)."""
 
 EPILOG = f"""\
@@ -39,9 +39,9 @@ defaults:
   --proton     {DEFAULT_PROTON}
 
 examples:
-  bs-arm64.sh install ~/.local/share/BSManager/BSInstances/1.44.1-arm64
-  bs-arm64.sh launch ~/.local/share/BSManager/BSInstances/1.44.1-arm64 --detach
-  bs-arm64.sh doctor ~/.local/share/BSManager/BSInstances/1.44.1-arm64"""
+  bs-arm64.sh install ~/.local/share/BSManager/BSInstances/1.45.1-arm64
+  bs-arm64.sh launch ~/.local/share/BSManager/BSInstances/1.45.1-arm64 --detach
+  bs-arm64.sh doctor ~/.local/share/BSManager/BSInstances/1.45.1-arm64"""
 
 COMMANDS = ("fetch", "install", "uninstall", "launch", "status", "doctor")
 

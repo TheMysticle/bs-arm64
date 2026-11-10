@@ -6,15 +6,15 @@
 > **[How to install on the Steam Frame](https://github.com/DaVarga/bs-manager/blob/bs-arm64/docs/steam-frame.md)**
 
 Run Beat Saber as a **native Windows ARM64** program on ARM64 Linux under Proton, tested on the
-**Steam Frame**, instead of emulating the x64 build with FEX. Every game version on Unity 6000.0.40f1
-works, which means 1.40.9 through 1.44.1 (see [Game versions](#game-versions)).
+**Steam Frame**, instead of emulating the x64 build with FEX. This fork is built for Unity 6000.3.19f1,
+which means Beat Saber 1.45.1 and 1.45.2 (see [Game versions](#game-versions)).
 
 The game's engine and C# code both run natively. Only Proton's small `steam.exe` launcher stays x64.
 
 ## Results on the Steam Frame
 
-Beat Saber 1.44.1, the same replay (STARLIGHT, Expert+) five times on each build, 2160 × 2160 per eye
-at 120 Hz, with reduced graphics settings (anti-aliasing 2×, Bloom, mirror, smoke and Screen
+Measured by the original project on Beat Saber 1.44.1 (not re-measured on 1.45.x yet): the same replay
+(STARLIGHT, Expert+) five times on each build, 2160 × 2160 per eye at 120 Hz, with reduced graphics settings (anti-aliasing 2×, Bloom, mirror, smoke and Screen
 Distortion off):
 
 | | Native ARM64 | x64 via FEX |
@@ -51,20 +51,20 @@ you copy `UserData` over from a Windows install.
 | Menu, maps (official), audio, visuals | ✅ |
 | Steam (login, ownership, platform init, online services) | ✅ |
 | OpenXR on SteamVR, controllers, recenter | ✅ |
-| Mods: BSIPA 4.3.7 + Harmony (tested: SiraUtil, BSML, SongCore, BS Utils) | ✅ on 1.41.1 and later |
+| Mods: BSIPA 4.3.7 + Harmony (tested: SiraUtil, BSML, SongCore, BS Utils, CustomSabersLite, HitScoreVisualizer) | ✅ |
 | Burst-compiled code | ⚠️ runs as managed code (no ARM64 Burst library) |
 | LIV mixed-reality capture | ❌ not available |
 
 ## Game versions
 
-The native runtime depends on the game's Unity engine, not on its version. Tested on the Frame, to the
-main menu with Steam and VR:
+The native runtime depends on the game's Unity engine, not on its version. This fork is built for
+Unity 6000.3.19f1; the installer refuses other engines before changing anything.
 
 | Beat Saber | Without mods | With mods |
 |---|---|---|
-| 1.40.8 and older | ❌ Unity 2022.3.33f1, the installer refuses it | |
-| 1.40.9 – 1.40.13 | ✅ | BeatMods has no mods for these versions |
-| 1.41.1 – 1.44.1 | ✅ | ✅ |
+| 1.44.1 and older | ❌ Unity 6000.0.40f1 or older: use [DaVarga/bs-arm64](https://github.com/DaVarga/bs-arm64)'s releases | |
+| 1.45.1 | ✅ verified on a Steam Frame: Steam, VR, maps, a full song | ✅ |
+| 1.45.2 | ✅ content-only patch: every file this runtime touches is byte-identical to 1.45.1 | ✅ |
 
 ## How it works
 
