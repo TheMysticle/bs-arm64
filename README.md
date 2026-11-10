@@ -3,7 +3,18 @@
 > [!NOTE]
 > The easiest way to get this running on your Frame is the Frame-compatible BSManager fork, which
 > installs it with one click.
-> **[How to install on the Steam Frame](https://github.com/DaVarga/bs-manager/blob/bs-arm64/docs/steam-frame.md)**
+> **[How to install on the Steam Frame](https://github.com/TheMysticle/bs-manager-steam-frame/blob/arm64-integration/docs/steam-frame.md)**
+
+> [!NOTE]
+> **This is a fork of [DaVarga/bs-arm64](https://github.com/DaVarga/bs-arm64) for Beat Saber 1.45.x.**
+> Everything that makes the game run as native ARM64 code (the reverse engineering, and every native
+> replacement component: Steamworks, lsteamclient, wineopenxr, DXVK, the BSIPA Doorstop, the private
+> Wine C++ runtime, the installer) is [Daniel Varga (DaVarga)](https://github.com/DaVarga)'s work.
+> Upstream targets Unity 6000.0.40f1, i.e. Beat Saber 1.40.9 through 1.44.1; this fork retargets the
+> same pipeline to Unity 6000.3.19f1 (1.45.1 and 1.45.2) and tracks upstream's releases, currently
+> 0.4.1. What changed: `versions.env`'s Unity pins and `BS_VERSIONS`, the OpenXR plugin version
+> (1.16.1, the last one Unity built for UWP ARM64; see [How it works](#how-it-works)), and the links.
+> For 1.44.1 and older, use upstream's releases.
 
 Run Beat Saber as a **native Windows ARM64** program on ARM64 Linux under Proton, tested on the
 **Steam Frame**, instead of emulating the x64 build with FEX. This fork is built for Unity 6000.3.19f1,
@@ -74,12 +85,12 @@ replacement, built from source here. See [docs/ARCHITECTURE.md](docs/ARCHITECTUR
 
 ## Quick start
 
-With a launcher: the [BSManager fork](https://github.com/DaVarga/bs-manager)'s **ARM64 tab** installs
+With a launcher: the [BSManager fork](https://github.com/TheMysticle/bs-manager-steam-frame)'s **ARM64 tab** installs
 the release matching your Proton version (see the note at the top).
 
 By hand, on the device, with **Proton 11.0 (ARM64)** installed from Steam (Library → Tools): download
 the release tarball for your Proton version from the
-[releases page](https://github.com/DaVarga/bs-arm64/releases), then:
+[releases page](https://github.com/TheMysticle/bs-arm64/releases), then:
 
 ```sh
 tar xf bs-arm64-*.tar.gz && cd bs-arm64-*/

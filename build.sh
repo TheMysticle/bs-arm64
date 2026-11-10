@@ -334,7 +334,7 @@ RELEASE_DLLS=(lsteamclient_a64.dll wineopenxr_a64.dll steam_api64.dll openxr_loa
 step_package() {
     local version=${BS_ARM64_VERSION:-$(git -C "$ROOT" describe --tags --always --dirty 2>/dev/null || echo dev)}
     local name=bs-arm64-$version-$PROTON_TAG dist=$ROOT/dist
-    local stage=$dist/$name repo=${BS_ARM64_REPO_URL:-https://github.com/DaVarga/bs-arm64}
+    local stage=$dist/$name repo=${BS_ARM64_REPO_URL:-https://github.com/TheMysticle/bs-arm64}
     local bs_range="${BS_VERSIONS%% *}–${BS_VERSIONS##* }"
     log "package $name"
     # The manifest points every tested Proton version at the tarball named after PROTON_TAG
@@ -460,7 +460,7 @@ release that lists it. GE-Proton isn't supported.
 ## Install
 
 Easiest: the **ARM64 tab** of the Steam Frame BSManager fork
-(https://github.com/DaVarga/bs-manager) installs this release for you. By hand:
+(https://github.com/TheMysticle/bs-manager-steam-frame) installs this release for you. By hand:
 
 Work on a **copy** of your instance (BSManager can duplicate instances).
 

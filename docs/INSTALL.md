@@ -1,7 +1,7 @@
 # Installing and running
 
 A launcher can run this installer for you (e.g. the ARM64 tab of the Steam Frame fork of
-[BSManager](https://github.com/DaVarga/bs-manager)). This page describes the installer itself.
+[BSManager](https://github.com/TheMysticle/bs-manager-steam-frame)). This page describes the installer itself.
 
 The installer is `install/bs-arm64.sh`, a small wrapper around the Python package
 [`install/bs_arm64`](../install/bs_arm64) (standard library only). It runs on the device (Steam Frame,
