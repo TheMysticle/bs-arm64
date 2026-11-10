@@ -3,6 +3,30 @@
 All notable changes to bs-arm64. Each release lists the Proton versions it was tested with (see its
 release notes).
 
+## [Unreleased] – fork for Beat Saber 1.45.x
+
+This fork of [DaVarga/bs-arm64](https://github.com/DaVarga/bs-arm64) retargets upstream 0.4.1 from
+Unity 6000.0.40f1 (Beat Saber 1.40.9–1.44.1) to Unity 6000.3.19f1 (1.45.1 and 1.45.2). It replaces
+the fork's earlier `v1.45.1` and `v1.45.1-1.45.2` releases, which were based on upstream 0.2.0 and so
+lacked everything from 0.2.1 to 0.4.1 below (SteamVR's own foveated rendering, the Wine C++
+exception-handling fix, the FPCR fix for wrong environment objects, Proton 11.0-2e, the Python
+installer with `status --json` and the release manifest).
+
+### Changed
+- `versions.env`: `UNITY_VERSION` 6000.3.19f1, `UNITY_CHANGESET` 7689f4515d75, `BS_VERSIONS`
+  "1.45.1 1.45.2". 1.45.2 is a content-only patch: every file this runtime replaces or patches is
+  byte-identical to 1.45.1, and the installer checks the engine, not the game version.
+- `UNITY_OPENXR_VERSION` 1.16.1: the game ships com.unity.xr.openxr 1.17.1, but Unity dropped the
+  UWP ARM64 build of the plugin at 1.17.0 and has never shipped a native windows/arm64 one. 1.16.1 is
+  the last version with the build `openxr_patch.py` needs; its native DLL runs with the game's
+  1.17.1 managed wrapper (verified in-headset on a Steam Frame).
+- Links, `SOURCES.md` and the release notes name this fork and its BSManager
+  ([TheMysticle/bs-manager-steam-frame](https://github.com/TheMysticle/bs-manager-steam-frame)).
+
+### Added
+- `install` records the release that did it in `<instance>/.bs-arm64/release`, and `status --json`
+  reports it as `installedRelease`, so BSManager's ARM64 tab can show it for installs made by hand.
+
 ## [0.4.1] – 2026-10-29
 
 ### Added
