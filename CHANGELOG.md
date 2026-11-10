@@ -1,6 +1,159 @@
 # Changelog
 
-All notable changes to bs-arm64. Each release is built for one Proton build (see its release notes).
+All notable changes to bs-arm64. Each release lists the Proton versions it was tested with (see its
+release notes).
+
+## [Unreleased] – fork for Beat Saber 1.45.x
+
+This fork of [DaVarga/bs-arm64](https://github.com/DaVarga/bs-arm64) retargets upstream 0.4.1 from
+Unity 6000.0.40f1 (Beat Saber 1.40.9–1.44.1) to Unity 6000.3.19f1 (1.45.1 and 1.45.2). It replaces
+the fork's earlier `v1.45.1` and `v1.45.1-1.45.2` releases, which were based on upstream 0.2.0 and so
+lacked everything from 0.2.1 to 0.4.1 below (SteamVR's own foveated rendering, the Wine C++
+exception-handling fix, the FPCR fix for wrong environment objects, Proton 11.0-2e, the Python
+installer with `status --json` and the release manifest).
+
+### Changed
+- `versions.env`: `UNITY_VERSION` 6000.3.19f1, `UNITY_CHANGESET` 7689f4515d75, `BS_VERSIONS`
+  "1.45.1 1.45.2". 1.45.2 is a content-only patch: every file this runtime replaces or patches is
+  byte-identical to 1.45.1, and the installer checks the engine, not the game version.
+- `UNITY_OPENXR_VERSION` 1.16.1: the game ships com.unity.xr.openxr 1.17.1, but Unity dropped the
+  UWP ARM64 build of the plugin at 1.17.0 and has never shipped a native windows/arm64 one. 1.16.1 is
+  the last version with the build `openxr_patch.py` needs; its native DLL runs with the game's
+  1.17.1 managed wrapper (verified in-headset on a Steam Frame).
+- Links, `SOURCES.md` and the release notes name this fork and its BSManager
+  ([TheMysticle/bs-manager-steam-frame](https://github.com/TheMysticle/bs-manager-steam-frame)).
+
+### Added
+- `install` records the release that did it in `<instance>/.bs-arm64/release`, and `status --json`
+  reports it as `installedRelease`, so BSManager's ARM64 tab can show it for installs made by hand.
+
+## [0.4.1] – 2026-10-29
+
+### Added
+- `fetch` and `install` accept `--unity-src PATH_OR_URL` and `--openxr-src PATH_OR_URL` to use local
+  Unity Windows Mono support and OpenXR packages or custom HTTP(S) URLs when Unity's default
+  downloads are inaccessible ([#18](https://github.com/DaVarga/bs-arm64/issues/18)). Providing both
+  packages locally also allows installation without downloads.
+
+## [0.4.0] – 2026-10-20
+
+### Changed
+- The installer is now a Python package (`install/bs_arm64`, standard library only); `bs-arm64.sh`
+  only starts it. Same commands, options, output and install record, so released BSManager versions
+  keep working with it.
+- `launch` starts the game under Steam's `reaper`, as Steam does. Without it, Steam treats the game as
+  a non-VR app: the Frame's non-VR frame limiter capped it (e.g. 40 FPS at 120 Hz) and its desktop
+  window showed in the VR overlay ([#14](https://github.com/DaVarga/bs-arm64/issues/14)).
+  Launchers that start Proton themselves, like released BSManager versions, don't get this fix.
+- `launch` follows Beat Saber's Foveated Rendering switch in Steam; `--foveation` / `--no-foveation`
+  override it. It runs in the foreground now (arguments after `--` go to the game); `--detach` starts
+  it in the background as before.
+- With foveated rendering off, `launch` no longer sets `DISABLE_VULKAN_FDM_INJECTION_LAYER=1`. The
+  startup hang it worked around came from Valve's layer being listed twice in `XDG_DATA_DIRS` (e.g. by
+  an AppImage), not from the layer itself; without the variables the layer stays inactive.
+- `install` creates the Wine prefix with Proton if it doesn't exist, so the game no longer has to be
+  launched once before installing.
+- A failed download names the URL and where it was redirected
+  ([#18](https://github.com/DaVarga/bs-arm64/issues/18)).
+
+### Removed
+- Cleanup of files from old releases on reinstall: the eye-tracking layer (0.2.0 and older), Microsoft's
+  `vcruntime140_1.dll` and `lsteamclient_a64.dll` in the game folder. An instance installed with one of
+  those releases keeps these unused files; uninstall still restores the original files.
+
+### Added
+- `doctor [<instance>]`: versions and state, for a bug report.
+- `status <instance>` and `--json` on every command, for launchers (docs/INSTALL.md, "For launchers").
+
+## [0.3.2] – 2026-10-10
+
+### Changed
+- Works with Proton 11.0-2e as well as 11.0-2c ([#11](https://github.com/DaVarga/bs-arm64/issues/11)).
+  2e changes nothing the DLLs depend on, so this is the same build, tested with 2e on the Steam
+  Frame. `PROTON_TAGS` in `versions.env` lists the tested Proton versions and the installer accepts
+  only those. On 2e, BSManager needs the version that reads `protonVersions` (after 1.6.0-frame.5)
+  to install it. After Steam updates Proton, run install again (or reinstall in BSManager's ARM64
+  tab).
+- `bs-arm64-manifest.json` has a new `protonVersions` field: the Proton versions the release works
+  with, and for each the release asset to install. `proton` stays for older BSManager versions and
+  still names the Proton version the DLLs are built against.
+
+## [0.3.1] – 2026-10-08
+
+### Fixed
+- Wrong environment objects on the Steam Frame, e.g. in the Grid ("Cube") environment
+  ([#8](https://github.com/DaVarga/bs-arm64/issues/8)). Wine on ARM64 writes the floating-point status
+  into the control register after each window callback
+  ([bug 60453](https://bugs.winehq.org/show_bug.cgi?id=60453)). On the Frame's CPU that makes
+  denormal floats read as zero, and Unity's `Mathf.Approximately(0, 0)` returns false.
+  `steam_api64.dll` now patches that instruction in the game's copy of Wine's `ntdll.so` when it
+  loads; `STEAMAPI_ARM64_FPCR_FIX=0` turns it off. Proton's files are not changed.
+
+## [0.3.0] – 2026-10-04
+
+### Added
+- Beat Saber 1.40.9 through 1.44.0, besides 1.44.1: every version on Unity 6000.0.40f1. Mods work on
+  1.41.1 and later; BeatMods has no mods for 1.40.9–1.40.13.
+- `steam_api64.dll` also serves games built against older Steamworks SDKs (1.40.x uses SDK 1.57): it
+  exports their entry points (`SteamAPI_Init`, …), hands out its own interface versions when a game
+  asks for older ones, and passes the functions newer SDKs dropped to Steam's old interfaces.
+- `bs-arm64-manifest.json` on each release: the Unity engines, Beat Saber versions and BSIPA versions
+  it was tested with, for BSManager.
+- `STEAMAPI_ARM64_LOG=<file>` writes the Steam log to a file; a build with
+  `STEAM_API_CFLAGS=-DSHIM_TRACE_CALLS` logs every Steam call.
+
+### Changed
+- The installer checks the instance's Unity engine instead of its game version
+  ([#4](https://github.com/DaVarga/bs-arm64/pull/4), thanks @Felixoid) and refuses other engines
+  (e.g. 1.40.8, Unity 2022.3.33f1) before changing anything.
+
+### Docs
+- README: the supported game versions and what was tested on each.
+
+## [0.2.2] – 2026-10-04
+
+### Changed
+- The C++ runtime next to the game is now Wine's own, built from the matching Proton source with
+  Wine's fix for the ARM64 exception-handling crash ([bug 60399](https://bugs.winehq.org/show_bug.cgi?id=60399),
+  merged upstream as [6964eb2](https://github.com/wine-mirror/wine/commit/6964eb2b018a9029b561124269e7ceec5bde8086))
+  backported. It installs `ucrtbs64.dll`, `vcruntime140.dll` and `msvcp140.dll` only in the ARM64
+  instance; the prefix, other games and BSManager's launch settings are unchanged.
+- Mods use the unmodified upstream MonoMod.Core 1.3.4, which has the Windows ARM64 ABI, instead of
+  our patched rebuild of 1.3.3. The installer upgrades BSIPA's 1.3.3 and earlier bs-arm64 builds.
+- Reinstalling over an earlier release swaps the runtimes and keeps the original backups; uninstall
+  restores them. The `vcruntime140_1.dll` earlier releases installed is removed.
+- The installer checks the Wine prefix and Proton before changing the instance, so a missing prefix
+  no longer leaves it half installed.
+
+### Removed
+- The Microsoft VC++ ARM64 runtime download (`fetch` no longer needs it) and `vcredist_extract.py`.
+- The local MonoMod patch; building no longer needs a .NET SDK.
+- The Wine C++ exception-handling reproducer (`tools/repro/cxx-eh`); it is attached to the Wine bug.
+
+### Docs
+- [UPSTREAM.md](docs/UPSTREAM.md): the Wine and MonoMod bugs are fixed upstream; what we carry until
+  Proton and BSIPA pick the fixes up.
+
+## [0.2.1] – 2026-09-30
+
+### Changed
+- Foveated rendering now uses SteamVR's own (Valve's `fdm_injection` layer), the same one Steam turns
+  on for the x64 game, instead of our DXVK implementation. It follows the eyes too and is cheaper:
+  GPU 2.92 vs 3.16 ms and CPU 4.70 vs 5.37 ms per frame compared to 0.2.0's (STARLIGHT, 1776 px per
+  eye, no MSAA). Steam's Foveated Rendering switch turns it on through BSManager v1.6.0-frame.4 or
+  later; by hand, `bs-arm64.sh launch --foveation`. `FDM_DEBUG=enable,med` or `enable,hi` foveates
+  more than Steam's mild default.
+- The installer removes 0.2.0's eye-tracking OpenXR layer from the Wine prefix.
+
+### Removed
+- Our own fixed and eye-tracked foveated rendering (`BS_ARM64_FDM`, `BS_ARM64_FDM_*`) and
+  `XrApiLayer_bs_arm64_gaze.dll`.
+
+### Docs
+- What trips up a first install on a fresh Frame, and a list of upstream bugs we work around
+  ([UPSTREAM.md](docs/UPSTREAM.md)), including why Valve's layer hangs games started outside Steam.
+- AssetBundleLoadingTools' multi-pass mode draws everything twice; check it when copying `UserData`
+  from Windows.
 
 ## [0.2.0] – 2026-09-27
 
@@ -101,6 +254,12 @@ Steam, OpenXR on SteamVR and BSIPA mods.
   Harmony can patch.
 - Release packaging and GitHub workflow; the installer refuses other Proton builds.
 
+[0.4.0]: https://github.com/DaVarga/bs-arm64/releases/tag/v0.4.0
+[0.3.2]: https://github.com/DaVarga/bs-arm64/releases/tag/v0.3.2
+[0.3.1]: https://github.com/DaVarga/bs-arm64/releases/tag/v0.3.1
+[0.3.0]: https://github.com/DaVarga/bs-arm64/releases/tag/v0.3.0
+[0.2.2]: https://github.com/DaVarga/bs-arm64/releases/tag/v0.2.2
+[0.2.1]: https://github.com/DaVarga/bs-arm64/releases/tag/v0.2.1
 [0.2.0]: https://github.com/DaVarga/bs-arm64/releases/tag/v0.2.0
 [0.1.7]: https://github.com/DaVarga/bs-arm64/releases/tag/v0.1.7
 [0.1.6]: https://github.com/DaVarga/bs-arm64/releases/tag/v0.1.6
