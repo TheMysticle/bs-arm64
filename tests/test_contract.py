@@ -48,6 +48,7 @@ class OldBsManagerTests(ReleaseFixture):
         self.assertEqual((state / "mods").read_text().strip(), "1")
         build = f'{PINS["PROTON_TAG"]}-arm64'
         self.assertEqual((state / "proton-version").read_text().strip(), build)
+        self.assertEqual((state / "release").read_text().strip(), "v9.9.9")
         # BSManager's launch sets WINEDLLPATH to this dir and checks this file against Proton
         self.assertEqual((self.prefix / "pfx/drive_c/bs-arm64/proton-version").read_text().strip(), build)
 

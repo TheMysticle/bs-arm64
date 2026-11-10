@@ -30,6 +30,7 @@ def status(instance: Instance, setup: Setup) -> dict:
         "installed": installed,
         "mods": installed and instance.mods_enabled(),
         "installedProton": instance.read_state("proton-version"),
+        "installedRelease": instance.read_state("release"),
         "protonBuild": setup.proton.build,
         "protonArm64": setup.proton.is_arm64(),
         "protonTested": setup.proton.is_tested(setup.pins.proton_tags),

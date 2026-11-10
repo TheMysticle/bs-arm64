@@ -2,6 +2,7 @@
 import re
 import sys
 
+from . import pins as release
 from .config import Setup
 from .errors import Code, Error
 from .fetch import fetch
@@ -75,6 +76,9 @@ def install(instance: Instance, setup: Setup, mods: bool) -> None:
     instance.write_state("mods", "1" if mods else "0")
     prefix.setup_runtime(proton, setup.artifacts)
     instance.write_state("proton-version", proton.build)
+    # Which release did this. BSManager's ARM64 tab shows it; its own record only exists when it
+    # ran the installer itself, so an install by hand (e.g. over SSH) would otherwise show "?".
+    instance.write_state("release", release.version())
     instance.write_state("installed", instance.game_version())
     out.log("done")
     if sys.stdout.isatty():  # run by hand, not from a launcher such as BSManager
